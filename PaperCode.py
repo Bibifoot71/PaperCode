@@ -53,7 +53,7 @@ class PaperCode:
         # Lua #
 
         elif self.language == self.supported_languages[3]: subprocess.run(
-            ['lua', '-l', 'scripts/run', '-e', 'run([['+self.text+']])']
+            ['lua', '-e', 'loadstring([['+self.text+']])()']
         )
 
         # Not compatible #
