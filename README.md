@@ -1,2 +1,2 @@
 # PaperCode
-To run python code from a photo
+To run python/bash/lua code from a photo !
