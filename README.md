@@ -1,5 +1,7 @@
 # PaperCode
-To run Python / Bash / Lua code from a photo !
+To run Python / Bash / Lua / Perl / Ruby script from a photo !  
+  
+**INFO**: This script is optimized for UNIX/Linux systems.
 
 # How to use ?
 **You instantiate with the image path and language name:** `code = PaperCode( img_path, language )`  
