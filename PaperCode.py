@@ -25,41 +25,49 @@ class PaperCode:
 
         # We remove the last character which can cause problems at runtime.
         l=len(self.text); self.text = self.text[:l-1]
-                
+
+
     def _check_languages(self):
 
-        self.supported_languages = [3,'python'] # [0]: Total language supported
+        self.supported_languages = [5,'python'] # [0]: Total of supported languages
 
-        if not (which('bash') == None):
-              self.supported_languages.append('bash')
-        else: self.supported_languages.append(False)
+        lang_list = ('bash', 'lua', 'perl', 'ruby')
 
-        if not (which('lua') == None):
-              self.supported_languages.append('lua')
-        else: self.supported_languages.append(False)
+        for i in range(self.supported_languages[0]-1):
+
+            if not (which(lang_list[i]) == None):
+                  self.supported_languages.append(lang_list[i])
+            else: self.supported_languages.append(False)
+
 
     def run(self):
 
         # Python #
-
         if   self.language == self.supported_languages[1]: exec(self.text)
 
         # Bash #
-
         elif self.language == self.supported_languages[2]: subprocess.run(
             self.text, shell=True, executable='/bin/bash'
         )
 
         # Lua #
-
         elif self.language == self.supported_languages[3]: subprocess.run(
             ['lua', '-e', 'loadstring([['+self.text+']])()']
         )
 
-        # Not compatible #
+        # Perl #
+        elif self.language == self.supported_languages[4]: subprocess.run(
+            'perl -e \'{'+self.text+'}\'', shell=True
+        )
 
-        else:
+        # Ruby #
+        elif self.language == self.supported_languages[5]: subprocess.run(
+            'ruby -e \'('+self.text+')\'', shell=True
+        )
+
+        else: # Not compatible #
             print("Warning: this language cannot be executed.\nInfo: You can export the file with ' PaperCode.export() '.")
+
 
     def export(self, name='PaperCode_export'):
 
@@ -80,14 +88,14 @@ class PaperCode:
             print("Info: File exported to \""+export_path+"\"")
 
 
+
 if __name__ == '__main__':
 
     root = Tk(); root.withdraw()
     img_path = filedialog.askopenfilename()
     root.destroy()
 
-    lang = input('What is the language to be executed (def: python): ')
-    if lang == '': lang='python'
+    lang = input('What is the language to be executed (def: python): ') or 'python'
 
     code = PaperCode(img_path, lang)
     code.run() # code.export()
