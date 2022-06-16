@@ -86,6 +86,7 @@ class PaperCode:
             export_path = f'{export_path}/{name}.{extension}'
             export_file = open(export_path, 'w')
             export_file.write(self.text)
+            export_file.close()
 
             print("Info: File exported to \""+export_path+"\"")
 
