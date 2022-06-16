@@ -80,6 +80,8 @@ class PaperCode:
             if   self.language == self.supported_languages[1]: extension = 'py'
             elif self.language == self.supported_languages[2]: extension = 'sh'
             elif self.language == self.supported_languages[3]: extension = 'lua'
+            elif self.language == self.supported_languages[4]: extension = 'pl'
+            elif self.language == self.supported_languages[5]: extension = 'rb'
 
             export_path = f'{export_path}/{name}.{extension}'
             export_file = open(export_path, 'w')
@@ -98,4 +100,4 @@ if __name__ == '__main__':
     lang = input('What is the language to be executed (def: python): ') or 'python'
 
     code = PaperCode(img_path, lang)
-    code.run() # code.export()
+    code.run() # code.export('name_file')
