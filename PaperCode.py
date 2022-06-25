@@ -11,59 +11,40 @@ class PaperCode:
 
     def __init__(self, img_path, language='python'):
 
+        # Get text from image
         self.text = image_to_string(img_path)
 
-        # Check if the language is supported
-        self._check_languages(); self.language = None
-        for i in range(self.supported_languages[0]):
-            if language == self.supported_languages[i+1]:
-                self.language = language; break
+        # List of languages supported with execute command and file extension
+        self.lang_support = ( 5,    # Number of supported languages
+            ('python',  lambda: exec(self.text),                                                    'py'),
+            ('bash',    lambda: subprocess.run(self.text, shell=True, executable='/bin/bash'),      'sh'),
+            ('lua',     lambda: subprocess.run(['lua', '-e', 'loadstring([['+self.text+']])()']),   'lua'),
+            ('perl',    lambda: subprocess.run('perl -e \'{'+self.text+'}\'', shell=True),          'pl'),
+            ('ruby',    lambda: subprocess.run('ruby -e \'('+self.text+')\'', shell=True),          'rb')
+        )
 
-        # If not compatible
+        # Check if the language is supported
+    
+        self.language = None
+
+        for i in range(self.lang_support[0]):
+            if  language == self.lang_support[i+1][0] \
+                and which(self.lang_support[i+1][0]) != None:
+                    self.language = self.lang_support[i+1]; break
+
         if self.language == None:
             print("Warning: this language cannot be executed.")
+            extension = input('What file extension do you want for your file (def: ".txt"): ') or '.txt'
+            self.language = (language, None, extension)
 
         # We remove the last character which can cause problems at runtime.
         l=len(self.text); self.text = self.text[:l-1]
 
-
-    def _check_languages(self):
-
-        self.supported_languages = [5,'python'] # [0]: Total of supported languages
-
-        lang_list = ('bash', 'lua', 'perl', 'ruby')
-
-        for i in range(self.supported_languages[0]-1):
-
-            if not (which(lang_list[i]) == None):
-                  self.supported_languages.append(lang_list[i])
-            else: self.supported_languages.append(False)
-
-
     def run(self):
 
-        # Python #
-        if   self.language == self.supported_languages[1]: exec(self.text)
-
-        # Bash #
-        elif self.language == self.supported_languages[2]: subprocess.run(
-            self.text, shell=True, executable='/bin/bash'
-        )
-
-        # Lua #
-        elif self.language == self.supported_languages[3]: subprocess.run(
-            ['lua', '-e', 'loadstring([['+self.text+']])()']
-        )
-
-        # Perl #
-        elif self.language == self.supported_languages[4]: subprocess.run(
-            'perl -e \'{'+self.text+'}\'', shell=True
-        )
-
-        # Ruby #
-        elif self.language == self.supported_languages[5]: subprocess.run(
-            'ruby -e \'('+self.text+')\'', shell=True
-        )
+        # Exectuion of script #
+        if not (self.language[1] == None):
+            self.language[1]()
 
         else: # Not compatible #
             print("Warning: this language cannot be executed.\nInfo: You can export the file with ' PaperCode.export() '.")
@@ -76,20 +57,12 @@ class PaperCode:
         root.destroy()
 
         if export_path != '':
-
-            if   self.language == self.supported_languages[1]: extension = 'py'
-            elif self.language == self.supported_languages[2]: extension = 'sh'
-            elif self.language == self.supported_languages[3]: extension = 'lua'
-            elif self.language == self.supported_languages[4]: extension = 'pl'
-            elif self.language == self.supported_languages[5]: extension = 'rb'
-
-            export_path = f'{export_path}/{name}.{extension}'
+            export_path = f'{export_path}/{name}.{self.language[2]}'
             export_file = open(export_path, 'w')
             export_file.write(self.text)
             export_file.close()
 
             print("Info: File exported to \""+export_path+"\"")
-
 
 
 if __name__ == '__main__':
