@@ -34,7 +34,7 @@ class PaperCode:
 
         if self.language == None:
             print("Warning: this language cannot be executed.")
-            extension = input('What file extension do you want for your file (def: ".txt"): ') or '.txt'
+            extension = input('What file extension do you want for your file (def: "txt"): ') or 'txt'
             self.language = (language, None, extension)
 
         # We remove the last character which can cause problems at runtime.
